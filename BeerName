@@ -1,0 +1,1 @@
+print("El Posible nombre de tu cerveza es\n '"+input("Dime Tu Pais Favorito: ")+" "+input("Dime tu Color Favorito: ")+"'")
