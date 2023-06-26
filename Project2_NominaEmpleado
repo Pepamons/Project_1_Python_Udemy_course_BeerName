@@ -1,0 +1,5 @@
+empleado = input("Cual es tu Nombre : ")
+ventas_empleado = int(input("Cuanto has vendido este mes : "))
+comision = ventas_empleado*(13/100)
+print(f"Ok {empleado},este mes ganaste €{comision}")
+ 
