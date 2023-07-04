@@ -1,0 +1,190 @@
+from pathlib import Path
+import glob
+from os import system
+import os
+
+
+print('*' * 40)
+print("\nBienvenido al Recetario de Pepa")
+
+base = Path(Path.home(), "Recetas")
+print(f"Las Recetas se encuentran en : \n{base}")
+print()
+
+
+def conteo_recetas():
+    carpeta_raiz = Path(Path.home(), "Recetas")
+    extension = "**/*.txt"
+    # Buscar archivos .txt recursivamente en las carpetas
+    archivos_txt = glob.glob(f"{carpeta_raiz}/{extension}", recursive=True)
+    cantidad_txt = len(archivos_txt)
+    print(f"La cantidad de Recetas en las carpetas son: {cantidad_txt}")
+    print("\n")
+    """for txt in Path(carpeta_raiz).glob("**/*.txt"):
+        ruta_relativa = txt.relative_to(carpeta_raiz)
+        print(ruta_relativa)
+    print()"""
+
+
+conteo_recetas()
+
+
+def seleccionar_menu():
+
+    print("\n")  # Dos líneas adicionales de espacio
+    print('*' * 20)
+    print(f"Menu De Recetario:\n"
+          f"[1]- Leer Receta\n"
+          f"[2]- Crear Receta\n"
+          f"[3]- Crear Categoria\n"
+          f"[4]- Eliminar Receta\n"
+          f"[5]- Eliminar Categoria\n"
+          f"[6]- Cerrar Recetario\n")
+
+    print('*' * 20)
+
+    while True:
+        seleccion_menu = input("Selecciona un número: ")
+        if seleccion_menu.isdecimal() and 0 < int(seleccion_menu) < 7:
+            return seleccion_menu
+        else:
+            print("Error. Debe ingresar un numero del Menu.")
+
+
+
+def menu_1():
+
+    ruta_carpeta = Path(Path.home(), "Recetas")  # Reemplaza con la ruta de la carpeta que deseas analizar
+
+    # Obtener la lista de nombres de carpetas en la ruta
+    carpetas = [nombre for nombre in os.listdir(ruta_carpeta) if os.path.isdir(os.path.join(ruta_carpeta, nombre))]
+
+    # Mostrar las carpetas disponibles
+    print("Carpetas disponibles:")
+    for i, carpeta in enumerate(carpetas, start=1):
+        print(f"[{i}] {carpeta}")
+
+    # Solicitar la selección al usuario
+    seleccion = None
+    while seleccion is None:
+        opcion = input("Selecciona el número de la carpeta: ")
+        if opcion.isdigit() and 1 <= int(opcion) <= len(carpetas):
+            seleccion = carpetas[int(opcion) - 1]
+        else:
+            print("Selección inválida. Intenta nuevamente.")
+
+    # Utilizar la carpeta seleccionada
+    system('cls')
+    print(f"Seleccionaste la carpeta: {seleccion}")
+    # Aquí puedes agregar la lógica adicional que desees utilizar con la carpeta seleccionada
+    ruta_categoria = Path(Path.home(), "Recetas", seleccion)
+    # Obtener la lista de archivos .txt en la ruta de la categoría seleccionada
+    recetas = [archivo.name for archivo in ruta_categoria.iterdir() if archivo.is_file() and archivo.suffix == ".txt"]
+
+    # Mostrar los archivos .txt encontrados
+
+    print("Recetas disponibles:")
+    for i, receta in enumerate(recetas, start=1):
+        print(f"[{i}] {receta}")
+
+    # Solicitar la selección al usuario
+    seleccion = None
+    while seleccion is None:
+        opcion = input("Selecciona el número de la Receta: ")
+        if opcion.isdigit() and 1 <= int(opcion) <= len(recetas):
+            seleccion = recetas[int(opcion) - 1]
+        else:
+            print("Selección inválida. Intenta nuevamente.")
+
+    system('cls')
+    print(f"Seleccionaste la Receta: {seleccion}")
+    ruta_receta = ruta_categoria / seleccion
+    mostrar_receta = open(ruta_receta, 'r')
+    contenido_receta = mostrar_receta.read()
+    print(contenido_receta)
+
+def menu_2():
+
+    ruta_carpeta = Path(Path.home(), "Recetas")
+
+    # Obtener la lista de nombres de carpetas en la ruta
+    carpetas = [nombre for nombre in os.listdir(ruta_carpeta) if os.path.isdir(os.path.join(ruta_carpeta, nombre))]
+
+    # Mostrar las carpetas disponibles
+    print("Carpetas disponibles:")
+    for i, carpeta in enumerate(carpetas, start=1):
+        print(f"[{i}] {carpeta}")
+
+    # Solicitar la selección al usuario
+    seleccion = None
+    while seleccion is None:
+        opcion = input("Selecciona el número de la carpeta: ")
+        if opcion.isdigit() and 1 <= int(opcion) <= len(carpetas):
+            seleccion = carpetas[int(opcion) - 1]
+        else:
+            print("Selección inválida. Intenta nuevamente.")
+
+    # Utilizar la carpeta seleccionada
+    system('cls')
+    print(f"Seleccionaste la carpeta: {seleccion}")
+    # Aquí puedes agregar la lógica adicional que desees utilizar con la carpeta seleccionada
+    ruta_categoria = Path(Path.home(), "Recetas", seleccion)
+    # Obtener la lista de archivos .txt en la ruta de la categoría seleccionada
+
+
+    system('cls')
+
+    seleccion_receta = None
+    while seleccion_receta is None:
+        nombre_receta = input("Cual es el nombre de la receta que quieres crear? : ")
+
+        if nombre_receta.isalpha():
+            archivo_receta = nombre_receta + ".txt"
+            ruta_receta = Path(Path.home(), "Recetas", seleccion, archivo_receta)
+            with open(ruta_receta, "w") as archivo:
+                # Escribe contenido en el archivo
+                contenido_receta = input("Escribe la Receta : ")
+                archivo.write(contenido_receta)
+                print("Ya fue creada su receta")
+                break
+        else:
+            print("Selección inválida. Intenta nuevamente.")
+
+
+
+
+seleccion = seleccionar_menu()
+
+while seleccion != "6":
+
+    if seleccion == "1":
+        system('cls')
+        menu_1()
+        seleccion = seleccionar_menu()
+
+    elif seleccion == "2":
+        system('cls')
+        print("Seleccionó 2")
+        menu_2()
+        seleccion = seleccionar_menu()
+
+    elif seleccion == "3":
+        system('cls')
+        print("Seleccionó 3")
+        seleccion = seleccionar_menu()
+
+    elif seleccion == "4":
+        system('cls')
+        print("Seleccionó 4")
+        seleccion = seleccionar_menu()
+
+    elif seleccion == "5":
+        system('cls')
+        print("Seleccionó 5")
+        seleccion = seleccionar_menu()
+
+    else:
+        print("Selección inválida")
+        seleccion = seleccionar_menu()
+
+print("Gracias, Hasta Pronto")
