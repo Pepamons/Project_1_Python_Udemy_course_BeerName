@@ -2,11 +2,14 @@ from pathlib import Path
 import glob
 from os import system
 import os
+import colorama
+from colorama import Fore
 
+colorama.init()
 
 print('*' * 40)
-print("\nBienvenido al Recetario de Pepa")
-
+print(Fore.GREEN + "\nBienvenido al Recetario de Pepa")
+print(colorama.Style.RESET_ALL)
 base = Path(Path.home(), "Recetas")
 print(f"Las Recetas se encuentran en : \n{base}")
 print()
@@ -30,17 +33,16 @@ conteo_recetas()
 
 
 def seleccionar_menu():
-
     print("\n")  # Dos líneas adicionales de espacio
     print('*' * 20)
-    print(f"Menu De Recetario:\n"
+    print(Fore.RED + f"Menu De Recetario:\n"
           f"[1]- Leer Receta\n"
           f"[2]- Crear Receta\n"
           f"[3]- Crear Categoria\n"
           f"[4]- Eliminar Receta\n"
           f"[5]- Eliminar Categoria\n"
           f"[6]- Cerrar Recetario\n")
-
+    print(colorama.Style.RESET_ALL)
     print('*' * 20)
 
     while True:
@@ -51,9 +53,7 @@ def seleccionar_menu():
             print("Error. Debe ingresar un numero del Menu.")
 
 
-
 def menu_1():
-
     ruta_carpeta = Path(Path.home(), "Recetas")  # Reemplaza con la ruta de la carpeta que deseas analizar
 
     # Obtener la lista de nombres de carpetas en la ruta
@@ -78,30 +78,35 @@ def menu_1():
     print(f"Seleccionaste la carpeta: {seleccion}")
     # Aquí puedes agregar la lógica adicional que desees utilizar con la carpeta seleccionada
     ruta_categoria = Path(Path.home(), "Recetas", seleccion)
-    # Obtener la lista de archivos .txt en la ruta de la categoría seleccionada
-    recetas = [archivo.name for archivo in ruta_categoria.iterdir() if archivo.is_file() and archivo.suffix == ".txt"]
 
-    # Mostrar los archivos .txt encontrados
+    if not any(ruta_categoria.iterdir()):
+        print("la categoria no tiene Recetas")
+    else:
+        # Obtener la lista de archivos .txt en la ruta de la categoría seleccionada
+        recetas = [archivo.name for archivo in ruta_categoria.iterdir() if
+                   archivo.is_file() and archivo.suffix == ".txt"]
 
-    print("Recetas disponibles:")
-    for i, receta in enumerate(recetas, start=1):
-        print(f"[{i}] {receta}")
+        # Mostrar los archivos .txt encontrados
+        print("Recetas disponibles:")
+        for i, receta in enumerate(recetas, start=1):
+            print(f"[{i}] {receta}")
 
-    # Solicitar la selección al usuario
-    seleccion = None
-    while seleccion is None:
-        opcion = input("Selecciona el número de la Receta: ")
-        if opcion.isdigit() and 1 <= int(opcion) <= len(recetas):
-            seleccion = recetas[int(opcion) - 1]
-        else:
-            print("Selección inválida. Intenta nuevamente.")
+        # Solicitar la selección al usuario
+        seleccion = None
+        while seleccion is None:
+            opcion = input("Selecciona el número de la Receta: ")
+            if opcion.isdigit() and 1 <= int(opcion) <= len(recetas):
+                seleccion = recetas[int(opcion) - 1]
+            else:
+                print("Selección inválida. Intenta nuevamente.")
 
-    system('cls')
-    print(f"Seleccionaste la Receta: {seleccion}")
-    ruta_receta = ruta_categoria / seleccion
-    mostrar_receta = open(ruta_receta, 'r')
-    contenido_receta = mostrar_receta.read()
-    print(contenido_receta)
+        system('cls')
+        print(f"Seleccionaste la Receta: {seleccion}")
+        ruta_receta = ruta_categoria / seleccion
+        mostrar_receta = open(ruta_receta, 'r')
+        contenido_receta = mostrar_receta.read()
+        print(contenido_receta)
+
 
 def menu_2():
 
@@ -151,6 +156,111 @@ def menu_2():
             print("Selección inválida. Intenta nuevamente.")
 
 
+def menu_3():
+
+    crear_categoria = None
+    while crear_categoria is None:
+        nombre_categoria = input("Cual es el nombre de la Categoria que quieres crear? : ")
+
+        if nombre_categoria.isalpha():
+
+            ruta_categoria = Path(Path.home(), "Recetas", nombre_categoria)
+            os.makedirs(ruta_categoria)
+            print("Ya fue creada su Categoria")
+            break
+        else:
+            print("Selección inválida. Intenta nuevamente.")
+
+
+def menu_4():
+
+    ruta_carpeta = Path(Path.home(), "Recetas")  # Reemplaza con la ruta de la carpeta que deseas analizar
+
+    # Obtener la lista de nombres de carpetas en la ruta
+    carpetas = [nombre for nombre in os.listdir(ruta_carpeta) if os.path.isdir(os.path.join(ruta_carpeta, nombre))]
+
+    # Mostrar las carpetas disponibles
+    print("Carpetas disponibles:")
+    for i, carpeta in enumerate(carpetas, start=1):
+        print(f"[{i}] {carpeta}")
+
+    # Solicitar la selección al usuario
+    seleccion = None
+    while seleccion is None:
+        opcion = input("Selecciona el número de la carpeta: ")
+        if opcion.isdigit() and 1 <= int(opcion) <= len(carpetas):
+            seleccion = carpetas[int(opcion) - 1]
+        else:
+            print("Selección inválida. Intenta nuevamente.")
+
+    # Utilizar la carpeta seleccionada
+    system('cls')
+    print(f"Seleccionaste la carpeta: {seleccion}")
+    # Aquí puedes agregar la lógica adicional que desees utilizar con la carpeta seleccionada
+    ruta_categoria = Path(Path.home(), "Recetas", seleccion)
+
+    # Verificar si la carpeta seleccionada contiene recetas
+    if not any(ruta_categoria.iterdir()):
+        print("La carpeta seleccionada no contiene recetas.")
+    else:
+        # Obtener la lista de archivos .txt en la ruta de la categoría seleccionada
+        recetas = [archivo.name for archivo in ruta_categoria.iterdir() if
+                   archivo.is_file() and archivo.suffix == ".txt"]
+
+        # Mostrar los archivos .txt encontrados
+        print("Recetas disponibles:")
+        for i, receta in enumerate(recetas, start=1):
+            print(f"[{i}] {receta}")
+
+        # Solicitar la selección al usuario
+        seleccion = None
+        while seleccion is None:
+            opcion = input("Selecciona el número de la Receta que desea Eliminar: ")
+            if opcion.isdigit() and 1 <= int(opcion) <= len(recetas):
+                seleccion = recetas[int(opcion) - 1]
+            else:
+                print("Selección inválida. Intenta nuevamente.")
+
+        system('cls')
+        print(f"Seleccionaste la Receta: {seleccion}")
+        ruta_receta = ruta_categoria / seleccion
+        print(ruta_receta)
+        if os.path.exists(ruta_receta):
+            os.remove(ruta_receta)
+            print("El archivo se ha borrado exitosamente.")
+        else:
+            print("El archivo no existe.")
+
+
+def menu_5():
+
+    ruta_carpeta = Path(Path.home(), "Recetas")
+
+    # Obtener la lista de nombres de carpetas en la ruta
+    carpetas = [nombre for nombre in os.listdir(ruta_carpeta) if os.path.isdir(os.path.join(ruta_carpeta, nombre))]
+
+    # Mostrar las carpetas disponibles
+    print("Carpetas disponibles:")
+    for i, carpeta in enumerate(carpetas, start=1):
+        print(f"[{i}] {carpeta}")
+
+    # Solicitar la selección al usuario
+    seleccion = None
+    while seleccion is None:
+        opcion = input("Selecciona el número de la categoria que quieres Eliminar: ")
+        if opcion.isdigit() and 1 <= int(opcion) <= len(carpetas):
+            seleccion = carpetas[int(opcion) - 1]
+        else:
+            print("Selección inválida. Intenta nuevamente.")
+
+    # Utilizar la carpeta seleccionada
+    system('cls')
+    os.rmdir(Path(Path.home(), "Recetas", seleccion))
+    print("La categoria se ha borrado exitosamente.")
+
+
+
+
 
 
 seleccion = seleccionar_menu()
@@ -164,23 +274,23 @@ while seleccion != "6":
 
     elif seleccion == "2":
         system('cls')
-        print("Seleccionó 2")
         menu_2()
         seleccion = seleccionar_menu()
 
     elif seleccion == "3":
         system('cls')
         print("Seleccionó 3")
+        menu_3()
         seleccion = seleccionar_menu()
 
     elif seleccion == "4":
         system('cls')
-        print("Seleccionó 4")
+        menu_4()
         seleccion = seleccionar_menu()
 
     elif seleccion == "5":
         system('cls')
-        print("Seleccionó 5")
+        menu_5()
         seleccion = seleccionar_menu()
 
     else:
