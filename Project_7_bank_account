@@ -1,0 +1,80 @@
+# Clase llamada persona dos atributos: nombre y apellido
+class Persona:
+    def __init__(self, nombre, apellido):
+        self.nombre = nombre
+        self.apellido = apellido
+
+
+# Clase llamada Cliente heredar persona atributyos:como número de cuenta y balance
+# metedo imprimir se muestren todos los datos
+# depositar
+# retirar
+class Cliente(Persona):
+    def __init__(self, nombre, apellido, numero_cuenta, balance=0):
+        super().__init__(nombre, apellido)
+        self.numero_cuenta = numero_cuenta
+        self.balance = balance
+
+    def __str__(self):
+        return f'Hola {self.nombre} {self.apellido}\n' \
+               f'Balance de  cuenta {self.numero_cuenta} :  ${self.balance}'
+
+    def depositar(self, monto_deposito):
+        self.balance += monto_deposito
+        print("Deposito aceptado")
+
+    def retirar(self, monto_retirar):
+        if self.balance >= monto_retirar:
+            self.balance -= monto_retirar
+            print("Retiro aceptado")
+        else:
+            print("no tienes Suficiente Dinero")
+
+
+# codigo  pmenu depositar,retirar o salir
+# funcion crear cliente, pidiendo usuario la info Return objerto ya creado
+# funicon inicio ..llama cliente.. loop del menu
+def crear_cliente():
+
+    nombre = input("Cual es el nombre del cliente :")
+    apellido = input("Cual es el apellido del cliente :")
+    numero_cuenta = input("Ingrese su numero de Cuenta: ")
+    cliente = Cliente(nombre, apellido, numero_cuenta)
+
+    return cliente
+
+
+def inicio():
+
+    mi_cliente = crear_cliente()
+    print('*' * 20)
+    print(mi_cliente)
+
+    opcion = 0
+    while opcion != "3":
+        print('*' * 20)
+        print(f"Menu De Banco:\n"
+              f"[1]- Depositar en Cuenta\n"
+              f"[2]- Retirar de Cuenta\n"
+              f"[3]- Salir del Banco\n")
+        print('*' * 20)
+        opcion = input("Selecciona un número: ")
+
+        if opcion == "1":
+            monto_deposito = int(input("Cuanto quieres Depositar en tu Cuenta: "))
+            mi_cliente.depositar(monto_deposito)
+            print('*' * 20)
+        elif opcion == "2":
+            monto_retiro = int(input("Cuanto quieres Depositar en tu Cuenta: "))
+            mi_cliente.retirar(monto_retiro)
+            print('*' * 20)
+        print(mi_cliente)
+
+    print("Gracias, Hasta Pronto")
+
+
+inicio()
+
+
+
+
